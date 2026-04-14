@@ -1,10 +1,15 @@
-export const API_URL = "http://localhost:8000";
+export const API_URL = "https://eec-h-system-production.up.railway.app";
+
+const TUNNEL_HEADERS = {
+    'Content-Type': 'application/json',
+    'bypass-tunnel-reminder': 'true',
+};
 
 export const api = {
     async register(payload: any) {
         const res = await fetch(`${API_URL}/register`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: TUNNEL_HEADERS,
             body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(await res.text());
@@ -12,7 +17,9 @@ export const api = {
     },
 
     async getLoginContext(username: string) {
-        const res = await fetch(`${API_URL}/login-context/${username}`);
+        const res = await fetch(`${API_URL}/login-context/${username}`, {
+            headers: TUNNEL_HEADERS,
+        });
         if (!res.ok) throw new Error(await res.text());
         return res.json();
     },
@@ -20,15 +27,17 @@ export const api = {
     async authenticate(payload: any) {
         const res = await fetch(`${API_URL}/auth`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: TUNNEL_HEADERS,
             body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(await res.text());
-        return res.json(); // returns { token: "..." }
+        return res.json();
     },
 
     async getDirectory(username: string) {
-        const res = await fetch(`${API_URL}/directory/${username}`);
+        const res = await fetch(`${API_URL}/directory/${username}`, {
+            headers: TUNNEL_HEADERS,
+        });
         if (!res.ok) throw new Error(await res.text());
         return res.json();
     },
@@ -36,7 +45,7 @@ export const api = {
     async sendMessage(payload: any) {
         const res = await fetch(`${API_URL}/messages`, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: TUNNEL_HEADERS,
             body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(await res.text());
