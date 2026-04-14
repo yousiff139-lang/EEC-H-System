@@ -113,7 +113,7 @@ export default function ClientPane({ userId, defaultPeerId, colorTheme }: { user
     };
 
     const connectWebSocket = (jwt: string) => {
-        const socket = new WebSocket(`ws://localhost:8000/ws?token=${jwt}`);
+        const socket = new WebSocket(`${WS_URL}?token=${jwt}`);
         socket.onmessage = async (event) => {
             const data = JSON.parse(event.data);
             if (data.type === "new_message") {

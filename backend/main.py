@@ -33,6 +33,12 @@ async def register(req: RegisterRequest):
     messages_db[req.username] = []
     return {"status": "success", "message": "Opaque vault stored."}
 
+@app.post("/debug/reset")
+async def reset_db():
+    users_db.clear()
+    messages_db.clear()
+    return {"status": "success", "message": "Database cleared."}
+
 @app.get("/login-context/{username}", response_model=LoginContextResponse)
 async def get_login_context(username: str):
     user = users_db.get(username)

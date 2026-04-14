@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Shield, Key, Lock, MessageSquare } from 'lucide-react';
+import { Shield, Key, Lock, MessageSquare, RotateCcw } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { initSodium } from './crypto/sodium';
+import { api } from './api';
 import ClientPane from './ClientPane';
 
 function App() {
@@ -10,6 +11,17 @@ function App() {
   useEffect(() => {
     initSodium().then(() => setReady(true));
   }, []);
+
+  const handleReset = async () => {
+    if (confirm("Clear all user vaults and messages from the server?")) {
+      try {
+        await api.resetDatabase();
+        window.location.reload();
+      } catch (e: any) {
+        alert("Reset failed: " + e.message);
+      }
+    }
+  };
 
   if (!ready) {
     return <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center' }}>Initializing WebAssembly Crypto Module...</div>;
@@ -22,7 +34,10 @@ function App() {
           <h1>ZK-E2EE <span>Communication</span></h1>
           <p>Stateless hardware-anchored end-to-end encryption demonstration.</p>
         </div>
-        <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button className="btn-secondary" onClick={handleReset} style={{ padding: '8px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(255,255,255,0.05)', marginRight: '16px' }}>
+            <RotateCcw size={14} /> Reset Server Data
+          </button>
           <span className="badge secure"><Shield size={12} style={{marginRight: 4}}/> WebAuthn PRF Ready</span>
           <span className="badge"><Key size={12} style={{marginRight: 4}}/> Curve25519</span>
           <span className="badge"><Lock size={12} style={{marginRight: 4}}/> XChaCha20-Poly1305</span>
