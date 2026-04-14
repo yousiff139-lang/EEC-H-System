@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api, API_URL } from './api';
+import { api, WS_URL } from './api';
 import { generatePrfSalt, registerWithPrf, authenticateWithPrf, bufferToBase64URL } from './crypto/webauthn';
 import { deriveHKDF } from './crypto/hkdf';
 import { sodium, generateIdentityKeyPair, generateMessagingKeyPair, wrapVault, unwrapVault, purgeMemory, deriveSharedSecret, encryptMessage, decryptMessage } from './crypto/sodium';
@@ -72,7 +72,7 @@ export default function ClientPane({ userId, defaultPeerId, colorTheme }: { user
             
             // 2. Call WebAuthn to reconstruct PRF output
             const prfSalt = sodium.from_hex(ctx.prf_salt_hex);
-            const ikm = await authenticateWithPrf(ctx.credential_id, prfSalt);
+            const ikm = await authenticateWithPrf(ctx.credential_id, prfSalt, userId);
 
             // 3. Re-derive WrapKey
             const wrapKey = await deriveHKDF(ikm, "chat_wrap_key_v1");
